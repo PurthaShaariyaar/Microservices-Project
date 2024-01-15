@@ -31,7 +31,9 @@ app.post('/events', (req, res) => {
     console.log(err.message);
   });
 
-  // EXTREMELY IMPORTANT TODO QUERY SERVICE
+  axios.post('http://localhost:4002/events', event).catch((err) => {
+    console.log(err.message);
+  });
 
   res.send({ status: 'OK' });
 });
