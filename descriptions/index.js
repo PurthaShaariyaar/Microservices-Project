@@ -42,14 +42,14 @@ app.post('/projects/:id/descriptions', async (req, res) => {
 
   descriptions.push({ id: descriptionId, description });
 
-  descriptionsByCourseId[req.params.id] = descriptions;
+  descriptionsByProjectId[req.params.id] = descriptions;
 
   await axios.post('http://localhost:4005/events', {
     type: 'DescriptionCreated',
     data: {
       id: descriptionId,
       description,
-      courseId: req.params.id
+      projectId: req.params.id
     }
   });
 
