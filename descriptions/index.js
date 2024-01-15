@@ -34,7 +34,7 @@ app.get('/projects/:id/descriptions', (req, res) => {
  * Update the descriptionsByProjectId with the new descriptions associated with the id
  * Send a status of 201 with descriptions
  */
-app.post('/projects/:id/descriptions', (req, res) => {
+app.post('/projects/:id/descriptions', async (req, res) => {
   const descriptionId = randomBytes(4).toString('hex');
   const { description } = req.body;
 
@@ -42,11 +42,27 @@ app.post('/projects/:id/descriptions', (req, res) => {
 
   descriptions.push({ id: descriptionId, description });
 
-  descriptionsByProjectId[req.params.id] = descriptions;
+  descriptionsByCourseId[req.params.id] = descriptions;
 
-  // TODO: Event-Bus functionality
+  await axios.post('http://localhost:4005/events', {
+    type: 'DescriptionCreated',
+    data: {
+      id: descriptionId,
+      description,
+      courseId: req.params.id
+    }
+  });
 
   res.status(201).send(descriptions);
+});
+
+/**
+ * Route handler to post received an event and respond with ok
+ */
+app.post('/events', (req, res) => {
+  console.log('Received event.', req.body.type);
+
+  res.send({});
 });
 
 // Start the server and listen on port 4001
